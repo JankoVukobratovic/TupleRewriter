@@ -1,0 +1,4 @@
+﻿{ 
+    var p = (10, 20); 
+    return new Vec3(p, 0); 
+}

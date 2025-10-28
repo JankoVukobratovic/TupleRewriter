@@ -24,7 +24,7 @@ public static class TupleLiteralRewriter
             VarDecl decl => new VarDecl(decl.Name, RewriteExpression(decl.Init, typeName)),
             Return ret => new Return(RewriteExpression(ret.Value, typeName)),
             Block block => RewriteBlockStatement(block, typeName),
-            _ => original with { }//either throw an error here or just skip.
+            _ => original 
         };
     }
 
@@ -44,11 +44,9 @@ public static class TupleLiteralRewriter
     {
         return originalExpr switch
         {
-            Id id => id with { },
-            Num num => num with { },
             NewExpr newExpr => RewriteNewExpression(newExpr, typeName),
             TupleLiteral tupleLiteral => RewriteTupleLiteral(tupleLiteral, typeName),
-            _ => originalExpr with { } // todo is this necessary? i mean everything is immutable, should make no difference weather its the original object or not.
+            _ => originalExpr // includes Id and Num
         };
     }
 

@@ -1,9 +1,30 @@
 ﻿namespace TupleRewriterTesting;
 
-public abstract class Tokenizer
+public abstract class Tokenizer()
 {
-    public abstract string? Peek();
-    public abstract string? Consume();
-    public abstract bool Check(string expected);
-    public abstract void Expect(string expected);
+    protected List<string> tokens;
+    protected int position = 0;
+    
+    
+
+    public virtual string? Peek()
+    {
+        return position < tokens.Count ? tokens[position] : null;
+    }
+
+    public virtual string? Consume()
+    {
+        return position < tokens.Count ? tokens[position++] : null;
+    }
+
+    public virtual bool Check(string expected)
+    {
+        return Peek() == expected;
+    }
+
+    public virtual void Expect(string expected)
+    {
+        if (!Check(expected)) throw new Exception($"Expected '{expected}' but found '{Peek()}'");
+        Consume();
+    }
 }

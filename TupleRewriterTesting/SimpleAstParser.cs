@@ -28,7 +28,7 @@ public class SimpleAstParser(Tokenizer tokenizer)
             tokenizer.Expect("}");
         }
 
-        return new Block(statements);
+        return new Block(statements.ToIReadOnlyList());
     }
 
     private Stmt ParseStatement()
@@ -121,7 +121,7 @@ public class SimpleAstParser(Tokenizer tokenizer)
             elements.Add(ParseExpression());
         }
 
-        return elements;
+        return elements.ToIReadOnlyList();
     }
 
     private Expr ParseLeafExpression()
