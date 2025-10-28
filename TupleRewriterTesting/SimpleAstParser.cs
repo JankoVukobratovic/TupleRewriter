@@ -8,6 +8,11 @@ namespace TupleRewriterTesting;
 /// </summary>
 public class SimpleAstParser(Tokenizer tokenizer)
 {
+    public static Block ParseWithDefaults(string source)
+    {
+        return new SimpleAstParser(new DelimitedTokenizer(source)).ParseBlock();
+    }
+
     public Block ParseBlock()
     {
         bool braced = tokenizer.Check("{");
@@ -20,7 +25,6 @@ public class SimpleAstParser(Tokenizer tokenizer)
         while (tokenizer.Peek() != null && !tokenizer.Check("}"))
         {
             statements.Add(ParseStatement());
-            tokenizer.Expect(";");
         }
 
         if (braced) // if it was opened by "{" it has to be closed by "}" 
@@ -50,7 +54,8 @@ public class SimpleAstParser(Tokenizer tokenizer)
 
         tokenizer.Expect("=");
         Expr init = ParseExpression();
-
+        
+        tokenizer.Expect(";");
         return new VarDecl(name, init);
     }
 
@@ -60,6 +65,7 @@ public class SimpleAstParser(Tokenizer tokenizer)
 
         var value = ParseExpression();
 
+        tokenizer.Expect(";");
         return new Return(value);
     }
 

@@ -1,0 +1,5 @@
+﻿var vec = new Vector((p, 5), 10); 
+{
+    var r = (p, vec);     
+    return new Model(r, (30, 40)); 
+}

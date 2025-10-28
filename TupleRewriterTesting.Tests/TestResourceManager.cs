@@ -1,4 +1,5 @@
-﻿using TupleRewriterTesting.records;
+﻿using Shouldly;
+using TupleRewriterTesting.records;
 
 namespace TupleRewriterTesting.Tests;
 
@@ -21,7 +22,7 @@ public static class TestResourceManager
         return File.ReadAllText(path);
     }
     
-    public static string GetExpectedEquivalent(string name)
+    public static string GetExpectedSource(string name)
     {
         var path = GetResourcePath(name, "expected.txt");
         if (!File.Exists(path))
@@ -36,9 +37,9 @@ public static class TestResourceManager
         return new DelimitedTokenizer(GetOriginalSource(name));
     }
     
-    private static Tokenizer GetEquivalentTokenizer(string name)
+    public static Tokenizer GetExpectedTokenizer(string name)
     {
-        return new DelimitedTokenizer(GetExpectedEquivalent(name));
+        return new DelimitedTokenizer(GetExpectedSource(name));
     }
     
     
@@ -50,17 +51,17 @@ public static class TestResourceManager
     }
     
     
-    public static Block ParseEquivalentBlock(string name)
+    public static Block ParseExpectedBlock(string name)
     {
-        var tokenizer = GetEquivalentTokenizer(name);
+        var tokenizer = GetExpectedTokenizer(name);
         var parser = new SimpleAstParser(tokenizer);
         return parser.ParseBlock();
     }
     
-    public static void AssertParsedBlockEqualsToEquivalent(Block sourceBlock, string expectedPath)
+    public static void AssertAstEqualsToExpectedEquivalent(Block sourceBlock, string expectedPath)
     {
-        var expectedAst = ParseEquivalentBlock(expectedPath);
+        var expectedAst = ParseExpectedBlock(expectedPath);
         
-        Assert.Equal(sourceBlock, expectedAst);
+        sourceBlock.ShouldBeEquivalentTo(expectedAst);
     }
 }

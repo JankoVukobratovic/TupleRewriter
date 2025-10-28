@@ -24,7 +24,7 @@ public abstract class Tokenizer()
 
     public virtual void Expect(string expected)
     {
-        if (!Check(expected)) throw new Exception($"Expected '{expected}' but found '{Peek()}'");
+        if (!Check(expected)) throw new Exception($"Expected '{expected}' but found '{Peek()}' at  position {position}.");
         Consume();
     }
 }

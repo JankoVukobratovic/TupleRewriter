@@ -8,7 +8,7 @@ public class AstParserTest
 {
     IReadOnlyList<Expr> ReadOnlyList(params Expr[] elements)
     {
-        return elements.ToList().ToIReadOnlyList(); 
+        return elements.ToList().ToIReadOnlyList();
         // had to do it this way because the object types have to be the same. This was the only way. :/
     }
 
@@ -68,10 +68,10 @@ public class AstParserTest
                 new Id("x"),
                 new Num("10")
             )))
-        )); 
+        ));
 
         var actualAst = ParseInput(input);
-        actualAst.ShouldBeEquivalentTo(expectedAst); 
+        actualAst.ShouldBeEquivalentTo(expectedAst);
     }
 
     [Fact]
@@ -107,7 +107,7 @@ public class AstParserTest
     [Fact]
     public void Parser_ShouldParse_NestedBlock()
     {
-        var input = "{ var x = 1; { return 2; }; }";
+        var input = "{ var x = 1; { return 2; } }";
 
         var expectedAst = new Block(ReadOnlyList(
             new VarDecl("x", new Num("1")),
@@ -153,5 +153,43 @@ public class AstParserTest
             )))
         ));
         originalAst.ShouldBeEquivalentTo(expectedAst);
+    }
+
+    [Fact]
+    public void Parser_ShouldCorrectlyParse_test1_Resource_original()
+    {
+        var originalAst = TestResourceManager.ParseOriginalBlock("test2");
+        /*
+        var vec = new Vector((p, 5), 10);
+        {
+            var r = (p, vec);
+            return new Model(r, (30, 40));
+        }
+
+         */
+
+        var expected = new Block(ReadOnlyList(
+            new VarDecl("vec", new NewExpr("Vector",
+                ReadOnlyList(
+                    new TupleLiteral(ReadOnlyList(new Id("p"),
+                        new Num("5"))
+                    ), new Num("10")))),
+            new Block(ReadOnlyList(
+                new VarDecl("r", new TupleLiteral(ReadOnlyList(new Id("p"), new Id("vec")))),
+                new Return(new NewExpr(
+                    "Model",
+                    ReadOnlyList(
+                        new Id("r"),
+                        new TupleLiteral(ReadOnlyList(
+                                new Num("30"),
+                                new Num("40")
+                            )
+                        )
+                    )
+                ))
+            ))
+        )); 
+        
+        originalAst.ShouldBeEquivalentTo(expected);
     }
 }
